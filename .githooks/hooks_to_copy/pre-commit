@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Make sure any error raised (by pylint, ruff, etc.) causes the commit to fail
+set -e
+
+if [ ! -z "$INIT_PYENV_IN_HOOKS" ]; then
+  eval "$(pyenv init -)"
+  eval "$(pyenv init --path)"
+  eval "$(pyenv virtualenv-init -)"
+  if [ -z "$VIRTUAL_ENV" ]  ; then
+    # Pyenv does not set VIRTUAL_ENV when auto activating from .python-version in a non interactive shell
+    # https://github.com/pyenv/pyenv-virtualenv/issues/348
+    pyenv activate
+  fi
+fi
+
+echo "Running bandit"
+bandit -c pyproject.toml -r .
+
+echo "Running black"
+black autocompany/
+
+echo "Running isort"
+isort  autocompany/
+
+echo "Running pylint"
+pylint autocompany/
+
+echo "Running ruff"
+ruff autocompany/

@@ -1,0 +1,7 @@
+-r requirements.txt
+
+bandit==1.7.5
+black==23.1.0
+isort==5.10.1
+pylint==2.17.0
+ruff==0.0.269
